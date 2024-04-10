@@ -1,0 +1,2014 @@
+<html>
+
+<head>
+    <style type="text/css">
+        .turbo-progress-bar {
+            position: fixed;
+            display: block;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: #0076ff;
+            z-index: 9999;
+            transition:
+                width 300ms ease-out,
+                opacity 150ms 150ms ease-in;
+            transform: translate3d(0, 0, 0);
+        }
+    </style>
+    <style id="st_globalStyles">
+        /* MEDIA QUERIES */
+        .anima-desktop-only {
+            @media (max-width: 768px) {
+                display: none !important;
+            }
+        }
+
+        /* SCROLLBAR */
+
+        [dark-scroll]::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        [dark-scroll]::-webkit-scrollbar-track-piece {
+            background-color: #2b2b2b;
+            border: 1px solid #1d1d1d;
+        }
+
+        [dark-scroll]::-webkit-scrollbar-thumb {
+            height: 10px;
+            background-color: #4d4d4d;
+        }
+
+        [dark-scroll]::-webkit-scrollbar-thumb:hover {
+            background-color: #5a5a5a;
+        }
+
+        /* LOAD PROGRESS */
+
+        .turbolinks-progress-bar {
+            height: 3px;
+            background-color: #ff6250;
+        }
+
+        /* GROUPING */
+
+        [data-id].ui-selecting {
+            box-shadow: inset 0 0 0 1px #4285f4 !important;
+        }
+
+        [data-id].ui-selected {
+            box-shadow: inset 0 0 0 1px #4285f4 !important;
+        }
+
+        /* CURSOR */
+
+        body[mode='comments'] * {
+            cursor: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik00LjkxNjQ4IDIzLjQxMDlDNS40OTE1MyAyMi45ODg3IDUuOTMxNzkgMjIuMzkzNSA2LjIzMjggMjEuNjQwN0M0Ljc5MDY5IDE5LjczODMgNCAxNy4zOTMzIDQgMTQuOTk3NUM0IDguOTM0MSA4LjkzMjgyIDQgMTUuMDAyMiA0QzIxLjA3MTcgNCAyNiA4LjkzOTE5IDI2IDE1LjAwMjVDMjYgMjEuMDY1OSAyMS4wNjcyIDI2IDE0Ljk5NzggMjZDMTIuOTg5NiAyNiAxMS4wMzUzIDI1LjQ1NTcgOS4zMjM2NyAyNC40MjMxQzguNDI5NjUgMjQuOTU3MiA3LjQxNDM0IDI1LjIyNjggNi4zMDAxOCAyNS4yMjY4QzUuOTU0MjYgMjUuMjI2OCA1LjU5OTM1IDI1LjIwMTQgNS4yNTM0MiAyNS4xNDU0QzQuOTAzIDI1LjA4OTUgNC42Mjg5NiAyNC44MDQ2IDQuNTUyNTggMjQuNDE4QzQuNDc2MjEgMjQuMDI2NCA0LjYxOTk3IDIzLjYyOTYgNC45MTY0OCAyMy40MTA5WiIgZmlsbD0iI0ZGNjI1MCIvPgo8L3N2Zz4K') 0 24,
+                auto !important;
+        }
+
+        body[mode='code'] [data-id]:not(.hidden) {
+            cursor: default;
+        }
+
+        /* default node state */
+
+        body[mode='code'] [data-id]:not(.hidden),
+        body[mode='comments'] [data-id]:not(.hidden) {
+            pointer-events: all;
+        }
+
+        /* is_image */
+
+        body[mode='code'] [data-id].is_image [data-id],
+        body[mode='comments'] [data-id].is_image [data-id] {
+            pointer-events: none !important;
+        }
+
+        /* without a data-id or ignored */
+
+        [data-id].ignore,
+        body[mode='code'] *:not([data-id]) {
+            pointer-events: none !important;
+        }
+
+        /* disable transforms for ignored elements */
+
+
+        body[mode='code'] [data-id]:hover {
+            transform: none !important;
+        }
+
+        /* ANIMA BUTTONS */
+        .an-button {
+            position: relative;
+            height: 28px;
+            padding: 0 20px;
+            font-size: 14px;
+            border-radius: 4px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+            white-space: nowrap;
+            transition-property: all;
+            transition-duration: 100ms;
+            appearance: none;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            border-width: 0;
+        }
+
+        .an-button>div {
+            width: 100%;
+        }
+
+        .an-button.primary {
+            background: #ff6250;
+            color: #ffffff;
+        }
+
+        .an-button.primary:hover:not(:disabled) {
+            background: #e2412e;
+        }
+
+        .an-button.secondary {
+            background: transparent;
+            border: 1px solid #ff6250;
+            color: #ff6250;
+        }
+
+        .an-button.secondary:hover:not(:disabled) {
+            color: #ffffff;
+            background: #ff6250;
+        }
+
+        .an-button.rounded {
+            border-radius: 100px;
+        }
+
+        .an-button:disabled {
+            opacity: 0.5;
+        }
+
+        .an-button:disabled {
+            cursor: default;
+        }
+
+        .an-button:active,
+        .an-button:focus {
+            outline: none;
+        }
+    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1440, maximum-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="https://animaproject.s3.amazonaws.com/home/favicon.png">
+    <meta name="og:type" content="website">
+    <meta name="twitter:card" content="photo">
+    <script id="anima-load-script" src="load.js"></script>
+    <script id="anima-hotspots-script" src="hotspots.js"></script>
+    <style id="hotspots-styles">
+        .hotspot {
+            position: absolute;
+            border: 1px solid #2a9fd8;
+            background: rgba(0, 173, 255, 0.54);
+            opacity: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+    <script id="s_turbo" src="https://animaapp.s3.amazonaws.com/static/turbo.es2017-umd.js"></script>
+    <script id="anima-overrides-script" src="overrides.js"></script>
+    <script src="https://animaapp.s3.amazonaws.com/js/timeline.js"></script>
+    <style>
+        @import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+
+        @import url("https://fonts.googleapis.com/css?family=Lato:500,700,600,800");
+
+        /* The following line is used to measure usage of this code. You can remove it if you want. */
+        @import url("https://px.animaapp.com/6614cc320176319b06127956.6614cc330176319b06127959.d8Q1HQ0.hch.png");
+
+
+        .screen textarea:focus,
+        .screen input:focus {
+            outline: none;
+        }
+
+        .screen * {
+            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
+        }
+
+        .screen div {
+            -webkit-text-size-adjust: none;
+        }
+
+        .component-wrapper a {
+            display: contents;
+            pointer-events: auto;
+            text-decoration: none;
+        }
+
+        .component-wrapper * {
+            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+
+        .component-wrapper a *,
+        .component-wrapper input,
+        .component-wrapper video,
+        .component-wrapper iframe {
+            pointer-events: auto;
+        }
+
+        .component-wrapper.not-ready,
+        .component-wrapper.not-ready * {
+            visibility: hidden !important;
+        }
+
+        .screen a {
+            display: contents;
+            text-decoration: none;
+        }
+
+        .full-width-a {
+            width: 100%;
+        }
+
+        .full-height-a {
+            height: 100%;
+        }
+
+        .container-center-vertical {
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .container-center-vertical>* {
+            flex-shrink: 0;
+            pointer-events: auto;
+        }
+
+        .container-center-horizontal {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            pointer-events: none;
+            width: 100%;
+        }
+
+        .container-center-horizontal>* {
+            flex-shrink: 0;
+            pointer-events: auto;
+        }
+
+        .auto-animated div {
+            --z-index: -1;
+            opacity: 0;
+            position: absolute;
+        }
+
+        .auto-animated input {
+            --z-index: -1;
+            opacity: 0;
+            position: absolute;
+        }
+
+        .auto-animated .container-center-vertical,
+        .auto-animated .container-center-horizontal {
+            opacity: 1;
+        }
+
+        .overlay-base {
+            display: none;
+            height: 100%;
+            opacity: 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        .overlay-base.animate-appear {
+            align-items: center;
+            animation: reveal 0.3s ease-in-out 1 normal forwards;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+        }
+
+        .overlay-base.animate-disappear {
+            animation: reveal 0.3s ease-in-out 1 reverse forwards;
+            display: block;
+            opacity: 1;
+            pointer-events: none;
+        }
+
+        .overlay-base.animate-disappear * {
+            pointer-events: none;
+        }
+
+        @keyframes reveal {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .animate-nodelay {
+            animation-delay: 0s;
+        }
+
+        .align-self-flex-start {
+            align-self: flex-start;
+        }
+
+        .align-self-flex-end {
+            align-self: flex-end;
+        }
+
+        .align-self-flex-center {
+            align-self: flex-center;
+        }
+
+        .valign-text-middle {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .valign-text-bottom {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        input:focus {
+            outline: none;
+        }
+
+        .listeners-active,
+        .listeners-active * {
+            pointer-events: auto;
+        }
+
+        .hidden,
+        .hidden * {
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .smart-layers-pointers,
+        .smart-layers-pointers * {
+            pointer-events: auto;
+            visibility: visible;
+        }
+
+        .listeners-active-click,
+        .listeners-active-click * {
+            cursor: pointer;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --alto: #d9d9d9;
+            --black: #000000;
+            --cape-cod: #3d4344;
+            --cape-cod-2: #3d4244;
+            --spring-wood: #f7f6f2;
+            --white: #ffffff;
+
+            --font-size-l: 18px;
+            --font-size-m: 16px;
+            --font-size-s: 13px;
+            --font-size-xl: 20px;
+            --font-size-xxl: 25px;
+            --font-size-xxxl: 40px;
+            --font-size-xxxxl: 60px;
+
+            --font-family-lato: "Lato", Helvetica;
+        }
+
+        .lato-semi-bold-cape-cod-16px {
+            color: var(--cape-cod);
+            font-family: var(--font-family-lato);
+            font-size: var(--font-size-m);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .lato-semi-bold-cape-cod-40px {
+            color: var(--cape-cod-2);
+            font-family: var(--font-family-lato);
+            font-size: var(--font-size-xxxl);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .lato-extra-bold-cape-cod-16px {
+            color: var(--cape-cod);
+            font-family: var(--font-family-lato);
+            font-size: var(--font-size-m);
+            font-style: normal;
+            font-weight: 800;
+        }
+
+        .lato-extra-bold-cape-cod-18px {
+            color: var(--cape-cod);
+            font-family: var(--font-family-lato);
+            font-size: var(--font-size-l);
+            font-style: normal;
+            font-weight: 800;
+        }
+
+        .lato-extra-bold-white-16px {
+            color: var(--white);
+            font-family: var(--font-family-lato);
+            font-size: var(--font-size-m);
+            font-style: normal;
+            font-weight: 800;
+        }
+
+        .lato-semi-bold-cape-cod-20px {
+            color: var(--cape-cod);
+            font-family: var(--font-family-lato);
+            font-size: var(--font-size-xl);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .lato-semi-bold-cape-cod-18px {
+            color: var(--cape-cod);
+            font-family: var(--font-family-lato);
+            font-size: var(--font-size-l);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .lato-medium-cape-cod-16px {
+            color: var(--cape-cod);
+            font-family: var(--font-family-lato);
+            font-size: var(--font-size-m);
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        .lato-bold-cape-cod-25px {
+            color: var(--cape-cod-2);
+            font-family: var(--font-family-lato);
+            font-size: var(--font-size-xxl);
+            font-style: normal;
+            font-weight: 700;
+        }
+
+        .lato-semi-bold-white-40px {
+            color: var(--white);
+            font-family: var(--font-family-lato);
+            font-size: var(--font-size-xxxl);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .lato-semi-bold-cape-cod-60px {
+            color: var(--cape-cod-2);
+            font-family: var(--font-family-lato);
+            font-size: var(--font-size-xxxxl);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .lato-semi-bold-white-18px {
+            color: var(--white);
+            font-family: var(--font-family-lato);
+            font-size: var(--font-size-l);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        :root {}
+
+
+        .top-1 {
+            background-color: transparent;
+            height: auto;
+            letter-spacing: 1.80px;
+            line-height: normal;
+            position: absolute;
+            text-align: left;
+        }
+
+        /* screen - service */
+
+        .service {
+            background-color: var(--white);
+            height: 4980px;
+            overflow: hidden;
+            overflow-x: hidden;
+            position: relative;
+            width: 1440px;
+        }
+
+        .service .rectangle-23-R3SQrl {
+            background-color: transparent;
+            height: 653px;
+            left: 0px;
+            position: absolute;
+            top: 0px;
+            width: 1440px;
+        }
+
+        .service .screenshot-2024-04-09-at-820-1-R3SQrl {
+            background-color: transparent;
+            height: 653px;
+            left: 1px;
+            object-fit: cover;
+            position: absolute;
+            top: 0px;
+            width: 1439px;
+        }
+
+        .service .group-10-R3SQrl {
+            background-color: transparent;
+            height: 82px;
+            left: 37px;
+            position: absolute;
+            top: 26px;
+            width: 1323px;
+        }
+
+        .service .component-1-R3SQrl {
+            background-color: transparent;
+            height: 1107px;
+            left: 0px;
+            position: absolute;
+            top: 3873px;
+            width: 1442px;
+        }
+
+        .service .rectangle-10-84EVP7 {
+            background-color: var(--black);
+            height: 566px;
+            left: 0px;
+            position: absolute;
+            top: 0px;
+            width: 1440px;
+        }
+
+        .service .rectangle-11-84EVP7 {
+            background-color: var(--spring-wood);
+            height: 402px;
+            left: 2px;
+            position: absolute;
+            top: 566px;
+            width: 1438px;
+        }
+
+        .service .top-84EVP7 {
+            background-color: transparent;
+            height: auto;
+            left: 891px;
+            letter-spacing: 1.80px;
+            line-height: normal;
+            position: absolute;
+            text-align: left;
+            top: 1013px;
+            width: 481px;
+        }
+
+        .service .text_label-84EVP7 {
+            left: 101px;
+            letter-spacing: 4.00px;
+            text-decoration: underline;
+            top: 665px;
+            width: 226px;
+        }
+
+        .service .x000-0000-0000-84EVP7 {
+            background-color: transparent;
+            height: auto;
+            left: 810px;
+            letter-spacing: 2.50px;
+            line-height: normal;
+            position: absolute;
+            text-align: left;
+            text-decoration: underline;
+            top: 819px;
+            width: 209px;
+        }
+
+        .service .contact-84EVP7 {
+            background-color: transparent;
+            height: auto;
+            left: 106px;
+            letter-spacing: 1.60px;
+            line-height: normal;
+            position: absolute;
+            text-align: left;
+            top: 631px;
+            width: 96px;
+        }
+
+        .service .text_label-2DHF8Z {
+            left: 822px;
+            letter-spacing: 1.60px;
+            top: 768px;
+            white-space: nowrap;
+            width: 185px;
+        }
+
+        .service .text_label-ab7Xp8 {
+            left: 1125px;
+            letter-spacing: 1.60px;
+            top: 768px;
+            white-space: nowrap;
+            width: 185px;
+        }
+
+        .service .rectangle-3-84EVP7 {
+            background-color: var(--cape-cod);
+            border-radius: 62px;
+            left: 1096px;
+            top: 835px;
+            width: 225px;
+        }
+
+        .service .text_label-ShPmjl {
+            left: 1138px;
+            letter-spacing: 1.60px;
+            top: 848px;
+            width: 157px;
+        }
+
+        .service .screenshot-2024-04-08-at-1200-1-84EVP7 {
+            background-color: transparent;
+            height: 566px;
+            left: 0px;
+            object-fit: cover;
+            position: absolute;
+            top: 0px;
+            width: 1440px;
+        }
+
+        .service .rectangle-8-84EVP7 {
+            background-color: var(--cape-cod);
+            height: 199px;
+            left: 419px;
+            position: absolute;
+            top: 130px;
+            width: 600px;
+        }
+
+        .service .rectangle-9-84EVP7 {
+            background-color: var(--white);
+            height: 59px;
+            left: 419px;
+            position: absolute;
+            top: 329px;
+            width: 600px;
+        }
+
+        .service .text_label-eO5xcZ {
+            left: 499px;
+            letter-spacing: 4.00px;
+            text-decoration: underline;
+            top: 216px;
+            width: 444px;
+        }
+
+        .service .ellipse-6-84EVP7 {
+            background-color: var(--spring-wood);
+            border-radius: 59.59px/60px;
+            height: 120px;
+            left: 371px;
+            position: absolute;
+            top: 86px;
+            width: 119px;
+        }
+
+        .service .flex-container-i8644277169-84EVP7 {
+            align-items: flex-start;
+            background-color: transparent;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: 60px;
+            left: 393px;
+            position: absolute;
+            top: 120px;
+            width: 117px;
+        }
+
+        .service .text0-i8644277169-rmuHpf {
+            align-self: stretch;
+            background-color: transparent;
+            letter-spacing: 1.80px;
+            line-height: normal;
+            position: relative;
+            text-align: left;
+        }
+
+        .service .span0-oWD8DP {
+            letter-spacing: 0.32px;
+        }
+
+        .service .text1-i8644277169-rmuHpf {
+            align-self: stretch;
+            background-color: transparent;
+            letter-spacing: 1.80px;
+            line-height: normal;
+            position: relative;
+            text-align: left;
+        }
+
+        .service .span1-mX2m75 {
+            letter-spacing: 0.32px;
+        }
+
+        .service .text_label-ozpxxr {
+            left: 503px;
+            letter-spacing: 1.80px;
+            top: 347px;
+            white-space: nowrap;
+            width: 436px;
+        }
+
+        .service .flex-container-i8644277170-84EVP7 {
+            align-items: flex-start;
+            background-color: transparent;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: 48px;
+            left: 104px;
+            position: absolute;
+            top: 760px;
+            width: 580px;
+        }
+
+        .service .text0-i8644277170-MU77Pw {
+            align-self: stretch;
+            background-color: transparent;
+            letter-spacing: 1.60px;
+            line-height: normal;
+            position: relative;
+            text-align: left;
+        }
+
+        .service .span0-y2MRxa {
+            letter-spacing: 0.26px;
+        }
+
+        .service .text1-i8644277170-MU77Pw {
+            align-self: stretch;
+            background-color: transparent;
+            letter-spacing: 1.60px;
+            line-height: normal;
+            position: relative;
+            text-align: left;
+        }
+
+        .service .span1-Luv47T {
+            letter-spacing: 0.26px;
+        }
+
+        .service .x00000000-84EVP7 {
+            background-color: transparent;
+            height: auto;
+            left: 813px;
+            letter-spacing: 1.60px;
+            line-height: normal;
+            position: absolute;
+            text-align: left;
+            top: 868px;
+            width: 206px;
+        }
+
+        .service .copyrightsminpaku2024-84EVP7 {
+            background-color: transparent;
+            height: auto;
+            left: 227px;
+            letter-spacing: 1.60px;
+            line-height: normal;
+            position: absolute;
+            text-align: left;
+            top: 1012px;
+            width: 264px;
+        }
+
+        .service .x1-84EVP7 {
+            height: 84px;
+            left: 866px;
+            object-fit: cover;
+            top: 653px;
+            width: 83px;
+        }
+
+        .service .x8-1-84EVP7 {
+            background-color: transparent;
+            height: 97px;
+            left: 1155px;
+            object-fit: cover;
+            position: absolute;
+            top: 653px;
+            width: 96px;
+        }
+
+        .service .rectangle-3-2DHF8Z {
+            background-color: var(--white);
+            border-radius: 62px;
+            left: 1147px;
+            top: 460px;
+            width: 225px;
+        }
+
+        .service .ellipse-7-84EVP7 {
+            background-color: var(--alto);
+            border-radius: 40.72px/41px;
+            height: 82px;
+            left: 96px;
+            position: absolute;
+            top: 981px;
+            width: 81px;
+        }
+
+        .service .text_label-kXwqlY {
+            left: 116px;
+            letter-spacing: 2.00px;
+            top: 998px;
+            width: 42px;
+        }
+
+        .service .image-R3SQrl {
+            height: 63px;
+            left: 424px;
+            top: 263px;
+            width: 588px;
+        }
+
+        .service .service-R3SQrl {
+            background-color: transparent;
+            height: 12px;
+            left: 681px;
+            position: absolute;
+            top: 359px;
+            width: 73px;
+        }
+
+        .service .rectangle-24-R3SQrl {
+            background-color: transparent;
+            height: 151px;
+            left: 2px;
+            position: absolute;
+            top: 653px;
+            width: 1438px;
+        }
+
+        .service .rectangle-3-R3SQrl {
+            background-color: transparent;
+            left: 462px;
+            top: 715px;
+            width: 515px;
+        }
+
+        .service .rectangle-25-R3SQrl {
+            background-color: transparent;
+            height: 798px;
+            left: 2px;
+            position: absolute;
+            top: 1598px;
+            width: 1438px;
+        }
+
+        .service .image-Ux2IlN {
+            height: 42px;
+            left: 502px;
+            top: 1039px;
+            width: 436px;
+        }
+
+        .service .image-NeAi5v {
+            height: 101px;
+            left: 568px;
+            top: 1668px;
+            width: 304px;
+        }
+
+        .service .image-mkjrfa {
+            height: 42px;
+            left: 574px;
+            top: 2978px;
+            width: 260px;
+        }
+
+        .service .group-16-R3SQrl {
+            background-color: transparent;
+            height: 169px;
+            left: 621px;
+            position: absolute;
+            top: 1195px;
+            width: 198px;
+        }
+
+        .service .rectangle-16-R3SQrl {
+            background-color: transparent;
+            height: 40px;
+            left: 585px;
+            position: absolute;
+            top: 1394px;
+            width: 269px;
+        }
+
+        .service .x2-R3SQrl {
+            height: 17px;
+            left: 635px;
+            top: 1406px;
+            width: 168px;
+        }
+
+        .service .x2-Ux2IlN {
+            height: 17px;
+            left: 986px;
+            top: 1406px;
+            width: 168px;
+        }
+
+        .service .rectangle-26-R3SQrl {
+            background-color: transparent;
+            height: 40px;
+            left: 936px;
+            position: absolute;
+            top: 1394px;
+            width: 269px;
+        }
+
+        .service .x36-R3SQrl {
+            height: 17px;
+            left: 1000px;
+            top: 1405px;
+            width: 140px;
+        }
+
+        .service .x2-NeAi5v {
+            height: 17px;
+            left: 283px;
+            top: 1406px;
+            width: 168px;
+        }
+
+        .service .rectangle-27-R3SQrl {
+            background-color: transparent;
+            height: 40px;
+            left: 234px;
+            position: absolute;
+            top: 1394px;
+            width: 269px;
+        }
+
+        .service .x53-R3SQrl {
+            background-color: transparent;
+            height: 17px;
+            left: 250px;
+            position: absolute;
+            top: 1406px;
+            width: 239px;
+        }
+
+        .service .x9161_paint-1-R3SQrl {
+            background-color: transparent;
+            height: 168px;
+            left: 247px;
+            object-fit: cover;
+            position: absolute;
+            top: 1196px;
+            width: 241px;
+        }
+
+        .service .x15-R3SQrl {
+            background-color: transparent;
+            height: 23px;
+            left: 285px;
+            position: absolute;
+            top: 1223px;
+            width: 65px;
+        }
+
+        .service .x9267_paint-1-R3SQrl {
+            background-color: transparent;
+            height: 169px;
+            left: 1033px;
+            object-fit: cover;
+            position: absolute;
+            top: 1195px;
+            width: 152px;
+        }
+
+        .service .group-17-R3SQrl {
+            background-color: transparent;
+            height: 82px;
+            left: 930px;
+            position: absolute;
+            top: 1188px;
+            width: 141px;
+        }
+
+        .service .rectangle-7-R3SQrl {
+            background-color: transparent;
+            height: 314px;
+            left: 216px;
+            position: absolute;
+            top: 1836px;
+            width: 277px;
+        }
+
+        .service .rectangle-30-R3SQrl {
+            background-color: transparent;
+            height: 314px;
+            left: 581px;
+            position: absolute;
+            top: 1836px;
+            width: 277px;
+        }
+
+        .service .rectangle-32-R3SQrl {
+            background-color: transparent;
+            height: 314px;
+            left: 932px;
+            position: absolute;
+            top: 1836px;
+            width: 277px;
+        }
+
+        .service .image-2ZqfZ1 {
+            height: 49px;
+            left: 283px;
+            top: 1864px;
+            width: 134px;
+        }
+
+        .service .image-4nIn21 {
+            height: 49px;
+            left: 642px;
+            top: 1864px;
+            width: 154px;
+        }
+
+        .service .image-1hFJsY {
+            height: 49px;
+            left: 1023px;
+            top: 1863px;
+            width: 96px;
+        }
+
+        .service .rectangle-28-R3SQrl {
+            background-color: transparent;
+            height: 3px;
+            left: 247px;
+            position: absolute;
+            top: 1932px;
+            width: 222px;
+        }
+
+        .service .rectangle-29-R3SQrl {
+            background-color: transparent;
+            height: 3px;
+            left: 612px;
+            position: absolute;
+            top: 1932px;
+            width: 222px;
+        }
+
+        .service .rectangle-31-R3SQrl {
+            background-color: transparent;
+            height: 3px;
+            left: 963px;
+            position: absolute;
+            top: 1932px;
+            width: 222px;
+        }
+
+        .service .x2090-R3SQrl {
+            background-color: transparent;
+            height: 120px;
+            left: 612px;
+            position: absolute;
+            top: 1964px;
+            width: 213px;
+        }
+
+        .service .x36-Ux2IlN {
+            height: 101px;
+            left: 963px;
+            top: 1964px;
+            width: 208px;
+        }
+
+        .service .image-OiUWtp {
+            height: 72px;
+            left: 247px;
+            top: 1964px;
+            width: 209px;
+        }
+
+        .service .ellipse-8-R3SQrl {
+            background-color: transparent;
+            height: 66px;
+            left: 207px;
+            position: absolute;
+            top: 1815px;
+            width: 66px;
+        }
+
+        .service .x1-R3SQrl {
+            height: 22px;
+            left: 232px;
+            top: 1836px;
+            width: 13px;
+        }
+
+        .service .ellipse-9-R3SQrl {
+            background-color: transparent;
+            height: 66px;
+            left: 568px;
+            position: absolute;
+            top: 1815px;
+            width: 66px;
+        }
+
+        .service .x2-mkjrfa {
+            height: 22px;
+            left: 592px;
+            top: 1836px;
+            width: 15px;
+        }
+
+        .service .ellipse-10-R3SQrl {
+            background-color: transparent;
+            height: 66px;
+            left: 920px;
+            position: absolute;
+            top: 1813px;
+            width: 66px;
+        }
+
+        .service .x3-R3SQrl {
+            background-color: transparent;
+            height: 22px;
+            left: 944px;
+            position: absolute;
+            top: 1834px;
+            width: 15px;
+        }
+
+        .service .image-i1xQvC {
+            height: 42px;
+            left: 499px;
+            top: 2450px;
+            width: 434px;
+        }
+
+        .service .screenshot-2024-04-09-at-1318-1-R3SQrl {
+            background-color: transparent;
+            height: 259px;
+            left: 798px;
+            object-fit: cover;
+            position: absolute;
+            top: 2591px;
+            width: 481px;
+        }
+
+        .service .screenshot-2024-04-09-at-1319-1-R3SQrl {
+            background-color: transparent;
+            height: 259px;
+            left: 203px;
+            object-fit: cover;
+            position: absolute;
+            top: 2591px;
+            width: 481px;
+        }
+
+        .service .ellipse-13-R3SQrl {
+            background-color: transparent;
+            height: 372px;
+            left: 0px;
+            position: absolute;
+            top: 3501px;
+            width: 1440px;
+        }
+
+        .service .group-18-R3SQrl {
+            background-color: transparent;
+            height: 126px;
+            left: 368px;
+            position: absolute;
+            top: 3102px;
+            width: 705px;
+        }
+
+        .service .group-19-R3SQrl {
+            background-color: transparent;
+            height: 126px;
+            left: 368px;
+            position: absolute;
+            top: 3275px;
+            width: 705px;
+        }
+
+        .service .group-20-R3SQrl {
+            background-color: transparent;
+            height: 126px;
+            left: 368px;
+            position: absolute;
+            top: 3438px;
+            width: 705px;
+        }
+
+        .service .rectangle-33-R3SQrl {
+            background-color: transparent;
+            height: 49px;
+            left: 462px;
+            position: absolute;
+            top: 2249px;
+            width: 515px;
+        }
+
+        .service .image-o7z0tx {
+            height: 15px;
+            left: 624px;
+            top: 2265px;
+            width: 189px;
+        }
+
+        .service .ellipse-14-R3SQrl {
+            background-color: transparent;
+            height: 372px;
+            left: 0px;
+            position: absolute;
+            top: 790px;
+            width: 1440px;
+        }
+
+        .service .image-JOI9Hz {
+            height: 101px;
+            left: 337px;
+            top: 819px;
+            width: 788px;
+        }
+
+        .service .image-qCrPNI {
+            height: 15px;
+            left: 624px;
+            top: 731px;
+            width: 189px;
+        }
+
+        .service .image {
+            background-color: transparent;
+            position: absolute;
+        }
+
+        .service .rectangle-3 {
+            height: 49px;
+            position: absolute;
+        }
+
+        .service .text_label {
+            background-color: transparent;
+            height: auto;
+            line-height: normal;
+            position: absolute;
+            text-align: left;
+        }
+
+        .service .x {
+            background-color: transparent;
+            height: auto;
+            left: 1210px;
+            letter-spacing: 1.60px;
+            line-height: normal;
+            position: absolute;
+            text-align: left;
+            top: 473px;
+            width: 123px;
+        }
+
+        .service .x1 {
+            background-color: transparent;
+            position: absolute;
+        }
+
+        .service .x2 {
+            background-color: transparent;
+            position: absolute;
+        }
+
+        .service .x36 {
+            background-color: transparent;
+            position: absolute;
+        }
+    </style>
+    <script id="anime-js-script" src="https://cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js"
+        integrity="sha256-98Q574VkbV+PkxXCKSgL6jVq9mrVbS7uCdA+vt0sLS8=" crossorigin="anonymous"></script>
+    <script id="imgloaded-js-script" src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+    <style id="action-links-styles">
+        @import url('https://fonts.googleapis.com/css2?family=Mulish&display=swap');
+
+        #anima-interface {
+            transition: all 0.5s ease-in-out;
+        }
+
+        #anima-watermark {
+            transition: all 0.5s ease-in-out;
+            display: none;
+        }
+
+        #anima-watermark-link {
+            position: fixed;
+            bottom: 20px;
+            height: 30px;
+            border-radius: 1000px;
+            background: #3B3B3B;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: width 0.25s cubic-bezier(0.175, 0.885, 0.320, 1.275);
+            text-decoration: none;
+            color: #fff;
+            padding: 8px 16px 8px 11px;
+            font-family: Mulish, sans-serif;
+            font-size: 12px;
+        }
+
+        #anima-watermark-link .text {
+            margin-left: 6px;
+        }
+
+        .omniview-anima-action-links .link {
+            height: 30px;
+            width: 30px;
+            border-radius: 1000px;
+            background: #3B3B3B;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: width 0.25s cubic-bezier(0.175, 0.885, 0.320, 1.275);
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .omniview-anima-action-links #comment-link .text,
+        .omniview-anima-action-links #code-link .text {
+            display: none;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        .omniview-anima-action-links #comment-link:hover,
+        .omniview-anima-action-links #code-link:hover {
+            width: 105px;
+        }
+
+        .omniview-anima-action-links #comment-link.pop-active,
+        .omniview-anima-action-links #code-link.pop-active {
+            width: 105px;
+            background: #FF6250;
+        }
+
+        .omniview-anima-action-links #comment-link.pop-active .text,
+        .omniview-anima-action-links #code-link.pop-active .text {
+            display: block
+        }
+
+        .omniview-anima-action-links #comment-link:hover .text,
+        .omniview-anima-action-links #code-link:hover .text {
+            display: block;
+        }
+
+        .link.navigation {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            height: 32px;
+            color: #fff;
+            font-size: 12px;
+            cursor: default;
+            padding: 0 5px;
+        }
+
+        .link.navigation .icon {
+            margin: 0 6px;
+            fill: none;
+            stroke: currentColor;
+            cursor: pointer;
+        }
+
+        .link.navigation .icon.disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+
+        .link.navigation .home-icon {
+            margin-left: 6px;
+            fill: currentColor;
+            stroke: currentColor;
+            cursor: pointer;
+        }
+
+        .omniview-anima-action-links .restart {
+            height: 30px;
+            padding: 0 12px;
+            background: #3B3B3B;
+            border-radius: 1000px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #f1f1f1;
+            font-size: 12px;
+        }
+
+        .omniview-anima-action-links {
+            display: flex;
+            align-items: center;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: Mulish, sans-serif;
+            transition: all 0.5s ease-in-out;
+            opacity: 1;
+        }
+
+        .omniview-anima-action-links>*+* {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+
+        .idle {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #popoverOpener {
+            position: absolute;
+            left: 50%;
+            margin-left: -10vw;
+            text-align: center;
+            top: 45vh;
+            width: 20vw;
+        }
+
+
+        .popover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1060;
+            display: none;
+            font-family: "sans-serif";
+            font-size: 14px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+        }
+
+        .popover.top {
+            margin-top: -12px
+        }
+
+        .popover.right {
+            margin-left: 10px
+        }
+
+        .popover.bottom {
+            margin-top: 10px
+        }
+
+        .popover.left {
+            margin-left: -10px
+        }
+
+        .popover-title {
+            padding: 8px 14px;
+            margin: 0;
+            font-size: 14px;
+            background-color: #f7f7f7;
+            border-bottom: 1px solid #ebebeb;
+            border-radius: 5px 5px 0 0
+        }
+
+        .popover-content {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            overflow: hidden;
+            font-family: Mulish, sans-serif;
+        }
+
+
+
+        .popover>.arrow,
+        .popover>.arrow:after {
+            position: absolute;
+            display: block;
+            width: 0;
+            height: 0;
+            border-color: transparent;
+            border-style: solid
+        }
+
+        .popover>.arrow {
+            border-width: 11px
+        }
+
+        .popover>.arrow:after {
+            content: "";
+            border-width: 10px
+        }
+
+        .popover.top>.arrow {
+            bottom: -11px;
+            left: 50%;
+            margin-left: -11px;
+            border-top-color: #999;
+            border-top-color: rgba(0, 0, 0, .25);
+            border-bottom-width: 0
+        }
+
+        .popover.top>.arrow:after {
+            bottom: 1px;
+            margin-left: -10px;
+            content: " ";
+            border-top-color: #fff;
+            border-bottom-width: 0
+        }
+
+        .popover.right>.arrow {
+            top: 50%;
+            left: -11px;
+            margin-top: -11px;
+            border-right-color: #999;
+            border-right-color: rgba(0, 0, 0, .25);
+            border-left-width: 0
+        }
+
+        .popover.right>.arrow:after {
+            bottom: -10px;
+            left: 1px;
+            content: " ";
+            border-right-color: #fff;
+            border-left-width: 0
+        }
+
+        .popover.bottom>.arrow {
+            top: -11px;
+            left: 50%;
+            margin-left: -11px;
+            border-top-width: 0;
+            border-bottom-color: #999;
+            border-bottom-color: rgba(0, 0, 0, .25)
+        }
+
+        .popover.bottom>.arrow:after {
+            top: 1px;
+            margin-left: -10px;
+            content: " ";
+            border-top-width: 0;
+            border-bottom-color: #fff
+        }
+
+        .popover.left>.arrow {
+            top: 50%;
+            right: -11px;
+            margin-top: -11px;
+            border-right-width: 0;
+            border-left-color: #999;
+            border-left-color: rgba(0, 0, 0, .25)
+        }
+
+        .popover.left>.arrow:after {
+            right: 1px;
+            bottom: -10px;
+            content: " ";
+            border-right-width: 0;
+            border-left-color: #fff
+        }
+
+
+
+        #anima-comment-popover,
+        #anima-code-popover {
+            background: #333333;
+            color: #fff;
+        }
+
+        #anima-comment-popover.top>.arrow,
+        #anima-comment-popover.top>.arrow:after,
+        #anima-code-popover.top>.arrow:after,
+        #anima-code-popover.top>.arrow {
+            border-top-color: #333;
+        }
+
+        #anima-comment-popover .btn,
+        #anima-code-popover .btn {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 6px 20px;
+            background: #FF6250;
+            color: #fff;
+            border-radius: 100px;
+            width: max-content;
+            text-decoration: none;
+        }
+
+        @media screen and (max-width: 550px) {
+            #anima-watermark-link {
+                padding: 6px !important;
+            }
+
+            #anima-watermark-link .text {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body style="margin: 0px; background: rgb(255, 255, 255); overflow-x: hidden;" dark-scroll=""><input type="hidden"
+        id="anPageName" name="page" value="service">
+    <div class="container-center-horizontal">
+        <div class="service screen " data-id="77:41"><img class="rectangle-23-R3SQrl" data-id="86:438"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-23.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-23.png"
+                alt="Rectangle 23"><img class="screenshot-2024-04-09-at-820-1-R3SQrl" data-id="86:439"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/screenshot-2024-04-09-at-8-20-1.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/screenshot-2024-04-09-at-8-20-1.png"
+                alt="Screenshot 2024-04-09 at 8.20 1"><img class="group-10-R3SQrl" data-id="87:533"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/group-10.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/group-10.png"
+                alt="Group 10">
+            <div class="component-1-R3SQrl" data-id="86:442">
+                <div class="rectangle-10-84EVP7" data-id="I86:442;77:176"></div>
+                <div class="rectangle-11-84EVP7" data-id="I86:442;77:189"></div>
+                <div class="top-84EVP7 lato-semi-bold-cape-cod-18px" data-id="I86:442;77:191">TOP　私たちについて　民泊を始めたい方　お問合せ
+                </div>
+                <h1 class="text_label-84EVP7 text_label lato-semi-bold-cape-cod-40px" data-id="I86:442;77:177">お問合わせ
+                </h1>
+                <div class="x000-0000-0000-84EVP7 lato-bold-cape-cod-25px" data-id="I86:442;77:183">000-0000-0000</div>
+                <div class="contact-84EVP7 lato-extra-bold-cape-cod-16px" data-id="I86:442;77:178">CONTACT</div>
+                <div class="text_label-2DHF8Z text_label lato-extra-bold-cape-cod-16px" data-id="I86:442;77:181">
+                    お電話でお問い合わせ</div>
+                <div class="text_label-ab7Xp8 text_label lato-extra-bold-cape-cod-16px" data-id="I86:442;77:182">
+                    メールでお問い合わせ</div>
+                <div class="rectangle-3-84EVP7 rectangle-3" data-id="I86:442;77:185"></div>
+                <div class="text_label-ShPmjl text_label lato-extra-bold-white-16px" data-id="I86:442;77:186">フォームはこちら
+                </div><img class="screenshot-2024-04-08-at-1200-1-84EVP7" data-id="I86:442;77:161"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+                    anima-src="" alt="Screenshot 2024-04-08 at 12.00 1">
+                <div class="rectangle-8-84EVP7" data-id="I86:442;77:165"></div>
+                <div class="rectangle-9-84EVP7" data-id="I86:442;77:166"></div>
+                <div class="text_label-eO5xcZ text_label lato-semi-bold-white-40px" data-id="I86:442;77:167">民泊の無料相談受付中
+                </div>
+                <div class="ellipse-6-84EVP7" data-id="I86:442;77:168"></div>
+                <div class="flex-container-i8644277169-84EVP7" data-id="I86:442;77:169-container">
+                    <div class="text0-i8644277169-rmuHpf lato-extra-bold-cape-cod-18px" data-id="I86:442;77:169-text0">
+                        <span class="span0-oWD8DP lato-extra-bold-cape-cod-18px"> 24時間<br></span></div>
+                    <div class="text1-i8644277169-rmuHpf lato-extra-bold-cape-cod-18px" data-id="I86:442;77:169-text1">
+                        <span class="span1-mX2m75 lato-extra-bold-cape-cod-18px">受付中！</span></div>
+                </div>
+                <div class="text_label-ozpxxr text_label lato-extra-bold-cape-cod-18px" data-id="I86:442;77:171">
+                    どのような物件でもお気軽に一度ご相談ください</div>
+                <div class="flex-container-i8644277170-84EVP7" data-id="I86:442;77:170-container">
+                    <div class="text0-i8644277170-MU77Pw lato-semi-bold-cape-cod-16px" data-id="I86:442;77:170-text0">
+                        <span
+                            class="span0-y2MRxa lato-semi-bold-cape-cod-16px">民泊運営についてのお問い合わせや資料請求、無料相談はこちらから。<br></span>
+                    </div>
+                    <div class="text1-i8644277170-MU77Pw lato-semi-bold-cape-cod-16px" data-id="I86:442;77:170-text1">
+                        <span class="span1-Luv47T lato-semi-bold-cape-cod-16px">お電話もしくはメールフォームにてお問い合わせを受け付けております。</span>
+                    </div>
+                </div>
+                <div class="x00000000-84EVP7 lato-semi-bold-cape-cod-16px" data-id="I86:442;77:188">受付時間：00:00〜00:00
+                </div>
+                <div class="copyrightsminpaku2024-84EVP7 lato-semi-bold-cape-cod-16px" data-id="I86:442;77:190">⁨⁩
+                    copyrights　minpaku　2024</div><img class="x1-84EVP7 x1" data-id="I86:442;77:179"
+                    src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/66155214f55f15443de8e55a/img/--------------1.png"
+                    anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/66155214f55f15443de8e55a/img/--------------1.png"
+                    alt="1"><img class="x8-1-84EVP7" data-id="I86:442;77:180"
+                    src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/66155214f55f15443de8e55a/img/------------8-1.png"
+                    anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/66155214f55f15443de8e55a/img/------------8-1.png"
+                    alt="8 1">
+                <div class="rectangle-3-2DHF8Z rectangle-3" data-id="I86:442;77:173"></div>
+                <div class="x lato-extra-bold-white-16px" data-id="I86:442;77:174">詳しくみる &gt;</div>
+                <div class="x lato-extra-bold-cape-cod-16px" data-id="I86:442;77:175">詳しくみる &gt;</div>
+                <div class="ellipse-7-84EVP7" data-id="I86:442;77:192"></div>
+                <div class="text_label-kXwqlY text_label lato-semi-bold-cape-cod-20px" data-id="I86:442;77:193">ロゴ<br>など
+                </div>
+            </div><img class="image-R3SQrl image" data-id="86:440"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/---------.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/---------.png"
+                alt="image"><img class="service-R3SQrl" data-id="86:441"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/service.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/service.png"
+                alt="SERVICE"><img class="rectangle-24-R3SQrl" data-id="87:529"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-24.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-24.png"
+                alt="Rectangle 24"><img class="rectangle-3-R3SQrl rectangle-3" data-id="88:778"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-3.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-3.png"
+                alt="Rectangle 3"><img class="rectangle-25-R3SQrl" data-id="87:531"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-25.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-25.png"
+                alt="Rectangle 25"><img class="image-Ux2IlN image" data-id="87:530"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/----------.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/----------.png"
+                alt="image"><img class="image-NeAi5v image" data-id="87:596"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/--------------.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/--------------.png"
+                alt="image"><img class="image-mkjrfa image" data-id="88:626"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/------.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/------.png"
+                alt="image"><img class="group-16-R3SQrl" data-id="87:552"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/group-16.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/group-16.png"
+                alt="Group 16"><img class="rectangle-16-R3SQrl" data-id="87:540"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-16.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-16.png"
+                alt="Rectangle 16"><img class="x2-R3SQrl x2" data-id="87:541"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-------2-.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-------2-.png"
+                alt="2"><img class="x2-Ux2IlN x2" data-id="87:562"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-------2-.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-------2-.png"
+                alt="2"><img class="rectangle-26-R3SQrl" data-id="87:563"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-16.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-16.png"
+                alt="Rectangle 26"><img class="x36-R3SQrl x36" data-id="87:571"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-----36-.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-----36-.png"
+                alt="36"><img class="x2-NeAi5v x2" data-id="87:572"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-------2-.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-------2-.png"
+                alt="2"><img class="rectangle-27-R3SQrl" data-id="87:573"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-16.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-16.png"
+                alt="Rectangle 27"><img class="x53-R3SQrl" data-id="87:580"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/----------53-.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/----------53-.png"
+                alt="53"><img class="x9161_paint-1-R3SQrl" data-id="87:582"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/9161-paint-1.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/9161-paint-1.png"
+                alt="9161_paint 1"><img class="x15-R3SQrl" data-id="87:587"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/1-5-.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/1-5-.png"
+                alt="1.5"><img class="x9267_paint-1-R3SQrl" data-id="87:588"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/9267-paint-1.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/9267-paint-1.png"
+                alt="9267_paint 1"><img class="group-17-R3SQrl" data-id="87:593"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/group-17.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/group-17.png"
+                alt="Group 17"><img class="rectangle-7-R3SQrl" data-id="87:597"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-7.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-7.png"
+                alt="Rectangle 7"><img class="rectangle-30-R3SQrl" data-id="87:604"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-7.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-7.png"
+                alt="Rectangle 30"><img class="rectangle-32-R3SQrl" data-id="87:607"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-7.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-7.png"
+                alt="Rectangle 32"><img class="image-2ZqfZ1 image" data-id="87:601"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-------------.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-------------.png"
+                alt="image"><img class="image-4nIn21 image" data-id="87:603"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/---------------1.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/---------------1.png"
+                alt="image"><img class="image-1hFJsY image" data-id="87:606"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/----------1.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/----------1.png"
+                alt="image"><img class="rectangle-28-R3SQrl" data-id="87:600"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-28.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-28.png"
+                alt="Rectangle 28"><img class="rectangle-29-R3SQrl" data-id="87:602"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-28.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-28.png"
+                alt="Rectangle 29"><img class="rectangle-31-R3SQrl" data-id="87:605"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-28.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-28.png"
+                alt="Rectangle 31"><img class="x2090-R3SQrl" data-id="87:611"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/------------------------------------20-----------90-------------.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/------------------------------------20-----------90-------------.png"
+                alt="2090"><img class="x36-Ux2IlN x36" data-id="87:612"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-----------36--------------------------------.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-----------36--------------------------------.png"
+                alt="36 "><img class="image-OiUWtp image" data-id="87:613"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/----------------------------------------.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/----------------------------------------.png"
+                alt="image"><img class="ellipse-8-R3SQrl" data-id="87:614"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/ellipse-8.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/ellipse-8.png"
+                alt="Ellipse 8"><img class="x1-R3SQrl x1" data-id="87:615"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/1.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/1.png"
+                alt="1"><img class="ellipse-9-R3SQrl" data-id="87:616"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/ellipse-8.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/ellipse-8.png"
+                alt="Ellipse 9"><img class="x2-mkjrfa x2" data-id="87:617"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/2.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/2.png"
+                alt="2"><img class="ellipse-10-R3SQrl" data-id="87:618"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/ellipse-8.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/ellipse-8.png"
+                alt="Ellipse 10"><img class="x3-R3SQrl" data-id="87:619"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/3.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/3.png"
+                alt="3"><img class="image-i1xQvC image" data-id="88:623"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-----------1.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-----------1.png"
+                alt="image"><img class="screenshot-2024-04-09-at-1318-1-R3SQrl" data-id="88:624"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/screenshot-2024-04-09-at-13-18-1.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/screenshot-2024-04-09-at-13-18-1.png"
+                alt="Screenshot 2024-04-09 at 13.18 1"><img class="screenshot-2024-04-09-at-1319-1-R3SQrl"
+                data-id="88:625"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/screenshot-2024-04-09-at-13-19-1.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/screenshot-2024-04-09-at-13-19-1.png"
+                alt="Screenshot 2024-04-09 at 13.19 1"><img class="ellipse-13-R3SQrl" data-id="88:627"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/ellipse-13.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/ellipse-13.png"
+                alt="Ellipse 13"><img class="group-18-R3SQrl" data-id="88:646"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/group-18.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/group-18.png"
+                alt="Group 18"><img class="group-19-R3SQrl" data-id="88:686"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/group-18.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/group-18.png"
+                alt="Group 19"><img class="group-20-R3SQrl" data-id="88:698"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/group-18.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/group-18.png"
+                alt="Group 20"><img class="rectangle-33-R3SQrl" data-id="88:779"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-3.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/rectangle-3.png"
+                alt="Rectangle 33"><img class="image-o7z0tx image" data-id="88:780"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-----------.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-----------.png"
+                alt="image"><img class="ellipse-14-R3SQrl" data-id="88:781"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/ellipse-14.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/ellipse-14.png"
+                alt="Ellipse 14"><img class="image-JOI9Hz image" data-id="88:785"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/----------------------------------------------------------------.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/----------------------------------------------------------------.png"
+                alt="image"><img class="image-qCrPNI image" data-id="88:786"
+                src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-----------.png"
+                anima-src="https://cdn.animaapp.com/projects/6614cc340176319b0612795b/releases/6615e3501ca09fec6e7d537c/img/-----------.png"
+                alt="image">
+        </div>
+    </div>
+    <script src="launchpad-js/launchpad-banner.js" async=""></script>
+    <script defer="" src="https://animaapp.s3.amazonaws.com/static/restart-btn.min.js"></script>
+    <div id="anima-interface" data-turbo-permanent="true" class="idle"><!---->
+        <div id="anima-comment-popover" class="popover top" role="tooltip" style="left: -205px; top: -220px;">
+            <div class="arrow" style="margin-left: 128px;"></div>
+            <div class="popover-content" style="align-items:center">
+                <div style="display:flex;flex-direction:column;height: 100%;padding: 20px;">
+                    <h3
+                        style="font-size:18px;margin-bottom:10px;font-weight:500;line-height: 26px;font-family: Roslindale;">
+                        Leave feedback and collaborate
+                    </h3>
+                    <p style="font-size:12px;margin-bottom:20px;font-weight:400;line-height: 20px;">
+                        Login to your account to leave comments. Don't have an account?
+                        Sign up for free!
+                    </p>
+                    <a target="_blank" rel="noopener noreferrer" class="btn"
+                        href="https://projects.animaapp.com/p/undefined/s/undefined?mode=comments&amp;utm_campaign=add-comment&amp;utm_medium=add-comment&amp;utm_source=animaapp.io">Add
+                        comment</a>
+                </div>
+
+                <div style="display:flex;align-items:center;justify-content:center;padding-right:20px">
+                    <img src="https://animaapp.s3.amazonaws.com/static/comment-illustration.svg">
+                </div>
+            </div>
+        </div>
+        <div id="anima-code-popover" class="popover top" role="tooltip" style="left: -205px; top: -220px;">
+            <div class="arrow" style="margin-left: 168px;"></div>
+            <div class="popover-content" style="align-items:center">
+                <div style="display:flex;flex-direction:column;height: 100%;padding: 20px;">
+                    <h3
+                        style="font-size:18px;margin-bottom:10px;font-weight:500;line-height: 26px;font-family: Roslindale;">
+                        Get clean code you’ll love with Anima
+                    </h3>
+                    <p style="font-size:12px;margin-bottom:20px;font-weight:400;line-height: 20px;">
+                        Login and easily export HTML, React or Vue of this prototype.
+                        Don’t have an account? Sign up for free!
+                    </p>
+                    <a target="_blank" rel="noopener noreferrer" class="btn"
+                        href="https://projects.animaapp.com/p/undefined/s/undefined?mode=code&amp;utm_campaign=get-code&amp;utm_medium=get-code&amp;utm_source=animaapp.io">
+                        Get code
+                    </a>
+                </div>
+
+                <img src="https://animaapp.s3.amazonaws.com/static/code-illustration.svg">
+            </div>
+        </div>
+        <div class="omniview-anima-action-links" id="actions-wrap">
+            <div class="omniview-anima-action-links">
+                <div id="page-nav" class="link navigation" style="display: none;">
+                    <svg id="homepage-icon" class="home-icon" width="24" height="24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M8.151 11a.25.25 0 01-.167-.436l4.349-3.913a.25.25 0 01.334 0l4.349 3.913a.25.25 0 01-.167.436H8.15zM16 12H9v4a1 1 0 001 1h5a1 1 0 001-1v-4z"
+                            fill="#fff"></path>
+                    </svg>
+
+                    <svg class="icon" id="arrow-left" width="24" height="24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 18l-6-6 6-6" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+
+                    <span id="page-num"></span>
+
+                    <svg class="icon" id="arrow-right" width="24" height="24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </div>
+
+                <a class="link" id="comment-link" target="_blank" style="display: none;">
+                    <span class="text">Comment</span>
+                    <svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M4.301 15.137a.551.551 0 01.199-.55c.314-.23.554-.554.718-.965A6.015 6.015 0 014 10 6.006 6.006 0   0110.001 4 6.006 6.006 0 0116 10.001 6.006 6.006 0 019.999 16a5.98 5.98 0 01-3.095-.86 3.165 3.165 0 01-1.65.438 3.6  3.6 0 01-.57-.044c-.191-.03-.34-.186-.383-.397z"
+                            fill="#fff"></path>
+                    </svg>
+                </a>
+
+                <a class="link" id="code-link" target="_blank" style="display: none;">
+                    <span class="text">Get Code</span>
+                    <svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 15.667a1 1 0 01-.707-1.708l3.626-3.625-3.626-3.626a1 1 0 111.415-1.415l4.333 4.333a1 1 0 010 1.414l-4.333 4.333a.993.993 0 01-.707.294zM7.333 5a1 1 0 01.707 1.708l-3.626 3.625 3.627 3.626a1 1 0 11-1.415 1.415L2.293 11.04a1 1 0 010-1.415l4.333-4.333A.992.992 0 017.333 5z"
+                            fill="#fff"></path>
+                    </svg>
+                </a>
+
+                <div class="restart" id="restart-btn" style="display: none;">
+                    <svg style="margin-right: 6px" width="12" height="12" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M6 11.817A5.017 5.017 0 01.994 6.811c0-.207.169-.375.375-.375s.375.168.375.375A4.265 4.265 0 006 11.067a4.265 4.265 0 004.256-4.256A4.265 4.265 0 006 2.555a.376.376 0 01-.375-.376c0-.206.169-.374.375-.374a5.017 5.017 0 015.006 5.006A5.017 5.017 0 016 11.817z"
+                            fill="#fff"></path>
+                        <path
+                            d="M6.75 4.237a.37.37 0 01-.263-.112l-1.65-1.65a.363.363 0 010-.525L6.487.3c.15-.15.375-.15.525 0 .15.15.15.375 0 .525L5.625 2.212 7.012 3.6c.15.15.15.375 0 .525-.056.075-.15.112-.262.112z"
+                            fill="#fff"></path>
+                    </svg>
+                    Restart
+                </div>
+            </div>
+        </div>
+        <!---->
+    </div>
+    <div id="anima-watermark" style="display: none;" class="idle"><!----><a id="anima-watermark-link" target="_blank"
+            href="https://www.animaapp.com?utm_campaign=public-link-banner&amp;utm_medium=public-link-banner&amp;utm_source=animaapp.io"
+            style="right: 20px; left: auto; padding: 6px;">
+            <svg width="20" height="20" viewBox="0 0 20 20" id="anima-logo-icon" fill="none"
+                xmlns="http://www.w3.org/2000/svg" data-hotspot-id="hp-0">
+                <path
+                    d="M4.09293 3.00001H16.5327C16.5484 2.99976 16.5638 3.00351 16.5776 3.01092C16.5913 3.01832 16.603 3.02913 16.6114 3.04231C16.6198 3.0555 16.6247 3.07061 16.6256 3.08622C16.6265 3.10182 16.6233 3.1174 16.6165 3.13146C15.5441 5.29706 13.9276 7.14699 11.9253 8.50009C8.69117 10.6822 5.43436 10.9075 4.09389 10.9196C4.08165 10.9198 4.06949 10.9176 4.05811 10.9131C4.04672 10.9086 4.03636 10.9019 4.02761 10.8933C4.01887 10.8848 4.01192 10.8745 4.00718 10.8633C4.00244 10.852 4 10.8399 4 10.8276V3.09198C4 3.07982 4.00241 3.06778 4.00709 3.05656C4.01177 3.04534 4.01863 3.03516 4.02728 3.02661C4.03592 3.01805 4.04617 3.0113 4.05744 3.00673C4.06871 3.00217 4.08077 2.99988 4.09293 3.00001Z"
+                    fill="#FF6250"></path>
+                <path
+                    d="M6.77772 17.4446C8.31182 17.4446 9.55545 16.201 9.55545 14.6669C9.55545 13.1328 8.31182 11.8892 6.77772 11.8892C5.24363 11.8892 4 13.1328 4 14.6669C4 16.201 5.24363 17.4446 6.77772 17.4446Z"
+                    fill="#FFDF90"></path>
+                <path
+                    d="M12.4559 17.2799C11.6701 16.9799 11.2522 16.1151 11.5185 15.3496L13.6153 9.3656C13.884 8.60003 14.7387 8.22302 15.5245 8.52299C16.3103 8.82344 16.7282 9.68772 16.4619 10.4538L14.365 16.4377C14.0964 17.2033 13.2417 17.5808 12.4559 17.2799Z"
+                    fill="#3366FF"></path>
+            </svg>
+            <span class="text" style="display: none;">Made with Anima</span>
+        </a><!----></div>
+    <div id="hotspots_wrapper">
+        <div class="hotspot" id="hp-0" style="top: 0px; left: 0px;"></div>
+    </div>
+    <div id="t_preload_links">
+        <link href="/contact" rel="prefetch">
+        <link href="/top" rel="prefetch">
+        <link href="/service" rel="prefetch">
+        <link href="/about" rel="prefetch">
+        <link
+            href="/wwwu46zanmaiu46info-by-htmlu46tou46design-u10084u65039-free-version-28u4702u472023u44-11u5815u5801-gmtu439"
+            rel="prefetch">
+    </div>
+</body>
+
+</html>
